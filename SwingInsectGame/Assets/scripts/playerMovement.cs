@@ -2,47 +2,68 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour {
+public class playerMovement : MonoBehaviour
+{
 
-	public Rigidbody2D rb;
-	private float moveInput;
-	public float moveSpeed;
+    public Rigidbody2D rb;
+    private float moveInput;
+    public float moveSpeed;
+    public bool jumpInput;
 
-	private bool isGrounded;
-	public Transform groundCheck;
-	public float checkRaduis;
-	public LayerMask whatIsGround;
+    private bool isGrounded;
+    public Transform groundCheck;
+    public float checkRaduis;
+    public LayerMask whatIsGround;
+    public LayerMask Hookable;
 
-	private float extraJumps;
-	public float extraJumpsValue;
-	public float jumpForce;
+    private float extraJumps;
+    public float extraJumpsValue;
+    public float jumpForce;
 
-	void Start () 
-	{
-		rb = GetComponent<Rigidbody2D> ();
+    public GameObject effect;
 
-		//rb variable is the rigidbody on our player object
-	}
-	
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
 
-	void FixedUpdate ()
-	{
-		isGrounded = Physics2D.OverlapCircle (groundCheck.position, checkRaduis, whatIsGround);
+        //rb variable is the rigidbody on our player object
+    }
 
-		//Checking if player is on the ground
 
-		moveInput = Input.GetAxisRaw ("Horizontal");
-		rb.velocity = new Vector2 (moveInput * moveSpeed, rb.velocity.y);
+    private void Update()
+    {
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRaduis, whatIsGround | Hookable);
+        moveInput = Input.GetAxisRaw("Horizontal");
+        jumpInput = Input.GetKeyDown(KeyCode.Space);
+        //Checking wether the player is on the ground or not
 
-		//move left and right
+        if (isGrounded == true)
+        {
+            extraJumps = extraJumpsValue;
+        }
 
-		if (isGrounded == true ){
-			extraJumps = extraJumpsValue;
-		}
+        if (jumpInput == true && extraJumps > 0)
+        {
+            rb.velocity = Vector2.up * jumpForce;
+            extraJumps--;
+        }
+    }
+    void FixedUpdate()
+    {
 
-		if (Input.GetKeyDown(KeyCode.Space) && extraJumps > 0) {
-			rb.velocity = Vector2.up * jumpForce;
-			extraJumps--;
-		}
-	}
+        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+
+        //move left and right
+
+
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.otherCollider.CompareTag("killMe"))
+        {
+            Instantiate(effect, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
+    }
 }
