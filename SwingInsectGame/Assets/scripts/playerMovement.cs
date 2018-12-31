@@ -1,38 +1,48 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class playerMovement : MonoBehaviour {
+public class PlayerMovement : MonoBehaviour {
 
-    public playerController otherScript;
-    public int speed;
-    private float direction;
-    private Vector2 movement;
-    private bool isJump, isCrouch;
-    
+	public Rigidbody2D rb;
+	private float moveInput;
+	public float moveSpeed;
 
-    public void Update()
-    {
-        
-        if (Input.GetAxisRaw("Horizontal") > 0)
-        {
-            direction = 1;
-        }else if (Input.GetAxisRaw("Horizontal") < 0)
-        {
-            direction = -1;
-        }
-        if (Input.GetAxisRaw("Vertical") > 0)
-        {
-            isJump = true;
-        }else if (Input.GetAxisRaw("Vertical") <= 0)
-        {
-            isJump = false;
-        }
-        //add crouch functionality here (set isCrouch if player presses shift)
-    }
+	private bool isGrounded;
+	public Transform groundCheck;
+	public float checkRaduis;
+	public LayerMask whatIsGround;
 
-    public void FixedUpdate()
-    {
-        otherScript.Move(direction * speed * Time.deltaTime, isCrouch, isJump);
-    }
+	private float extraJumps;
+	public float extraJumpsValue;
+	public float jumpForce;
+
+	void Start () 
+	{
+		rb = GetComponent<Rigidbody2D> ();
+
+		//rb variable is the rigidbody on our player object
+	}
+	
+
+	void FixedUpdate ()
+	{
+		isGrounded = Physics2D.OverlapCircle (groundCheck.position, checkRaduis, whatIsGround);
+
+		//Checking if player is on the ground
+
+		moveInput = Input.GetAxisRaw ("Horizontal");
+		rb.velocity = new Vector2 (moveInput * moveSpeed, rb.velocity.y);
+
+		//move left and right
+
+		if (isGrounded == true ){
+			extraJumps = extraJumpsValue;
+		}
+
+		if (Input.GetKeyDown(KeyCode.Space) && extraJumps > 0) {
+			rb.velocity = Vector2.up * jumpForce;
+			extraJumps--;
+		}
+	}
 }
