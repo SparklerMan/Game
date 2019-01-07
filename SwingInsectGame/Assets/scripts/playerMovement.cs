@@ -34,7 +34,7 @@ public class playerMovement : MonoBehaviour
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRaduis, whatIsGround | Hookable);
         moveInput = Input.GetAxisRaw("Horizontal");
-        jumpInput = Input.GetKeyDown(KeyCode.Space);
+		jumpInput = Input.GetKeyDown(KeyCode.W);
         //Checking wether the player is on the ground or not
 
         if (isGrounded == true)
