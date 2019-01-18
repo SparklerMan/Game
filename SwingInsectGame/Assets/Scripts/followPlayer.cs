@@ -6,8 +6,12 @@ public class followPlayer : MonoBehaviour {
     public Rigidbody2D playerRb;
 
 	void Update () {
-        Vector3 oof = new Vector3(playerRb.position.x, playerRb.position.y, -10);
-        transform.position = oof;
+        if (playerRb != null)
+        {
+            Vector3 oof = new Vector3(playerRb.position.x, playerRb.position.y + 3, -10);
+            transform.position = oof;
+        }
+
 	}
 
     
