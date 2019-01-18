@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - killMe
+  - enemy
+  - weapon
+  - boundariesUnder
+  - cantaloop
   layers:
   - Default
   - TransparentFX

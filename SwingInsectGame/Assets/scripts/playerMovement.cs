@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerMovement : MonoBehaviour
 {
@@ -20,7 +21,9 @@ public class playerMovement : MonoBehaviour
     public float extraJumpsValue;
     public float jumpForce;
 
-    public GameObject effect;
+    public bool isDead = false;
+    public bool facing = false;
+    private Vector3 newScale;
 
     void Start()
     {
@@ -34,9 +37,8 @@ public class playerMovement : MonoBehaviour
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRaduis, whatIsGround | Hookable);
         moveInput = Input.GetAxisRaw("Horizontal");
-		jumpInput = Input.GetKeyDown(KeyCode.W);
+        jumpInput = Input.GetKeyDown(KeyCode.W);
         //Checking wether the player is on the ground or not
-
         if (isGrounded == true)
         {
             extraJumps = extraJumpsValue;
@@ -50,8 +52,10 @@ public class playerMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
-
+        flip();
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+
+        
 
         //move left and right
 
@@ -60,10 +64,28 @@ public class playerMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.otherCollider.CompareTag("killMe"))
+        if (collision.collider.tag == "killMe")
         {
-            Instantiate(effect, transform.position, Quaternion.identity);
-            Destroy(gameObject);
+            isDead = true;
+        }else if (collision.collider.tag == "boundariesUnder")
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }else if (collision.collider.tag == "cantaloop")
+        {
+            SceneManager.LoadScene(1);
+        }
+
+    }
+
+    public void flip()
+    {
+        if(moveInput > 0 && !facing || moveInput < 0 && facing)
+        {
+            newScale = new Vector3(-1 * transform.localScale.x , transform.localScale.y, transform.localScale.z);
+            transform.localScale = newScale;
+            facing = !facing;
         }
     }
+
+
 }

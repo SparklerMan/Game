@@ -11,7 +11,6 @@ public class RopeSystem : MonoBehaviour {
     public playerMovement playerMovement;
     private bool ropeAttached;
     private Vector2 playerPosition;
-    private Rigidbody2D ropeHingeAnchorRb;
     private SpriteRenderer ropeHingeAnchorSprite;
 
 
@@ -25,7 +24,6 @@ public class RopeSystem : MonoBehaviour {
         // 2
         ropeJoint.enabled = false;
         playerPosition = transform.position;
-        ropeHingeAnchorRb = ropeHingeAnchor.GetComponent<Rigidbody2D>();
         ropeHingeAnchorSprite = ropeHingeAnchor.GetComponent<SpriteRenderer>();
     }
 
